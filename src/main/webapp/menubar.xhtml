@@ -1,0 +1,28 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui">
+
+    <h:form id="munubarForm">
+        <p:menubar id="menubar">
+            <p:menuitem value="#{bundle['menu.home']}" url="/" />
+
+            <p:submenu label="#{bundle['menu.orders']}"> 
+                <p:menuitem value="New order" url="/" />
+                <p:menuitem value="My orders" url="/" />
+                <p:separator/>
+                <p:menuitem value="All orders" url="/" />
+            </p:submenu>
+
+            <p:submenu label="#{bundle['menu.administration']}">
+                <p:menuitem value="#{bundle['menu.food']}" url="/food.xhtml" />
+            </p:submenu>
+
+            <p:menuitem value="Demo" url="/demo.xhtml" />
+
+            <p:submenu label="#{userController.authenticatedUser.name}" style="float: right;">
+                <p:menuitem value="#{bundle['auth.logout']}" action="#{userController.logout}"/>
+            </p:submenu>
+        </p:menubar>
+    </h:form>
+</ui:composition>

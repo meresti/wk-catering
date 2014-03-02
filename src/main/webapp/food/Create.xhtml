@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:composition template="/template.xhtml">
+        <ui:define name="title">
+            <h:outputText value="#{bundle.CreateFoodTitle}"></h:outputText>
+        </ui:define>
+        <ui:define name="body">
+            <h:panelGroup id="messagePanel" layout="block">
+                <h:messages errorStyle="color: red" infoStyle="color: green" layout="table"/>
+            </h:panelGroup>
+            <h:form>
+                <h:panelGrid columns="2">
+                    <h:outputLabel value="#{bundle.CreateFoodLabel_id}" for="id" />
+                    <h:inputText id="id" value="#{foodController.selected.id}" title="#{bundle.CreateFoodTitle_id}" required="true" requiredMessage="#{bundle.CreateFoodRequiredMessage_id}"/>
+                    <h:outputLabel value="#{bundle.CreateFoodLabel_name}" for="name" />
+                    <h:inputText id="name" value="#{foodController.selected.name}" title="#{bundle.CreateFoodTitle_name}" />
+                    <h:outputLabel value="#{bundle.CreateFoodLabel_price}" for="price" />
+                    <h:inputText id="price" value="#{foodController.selected.price}" title="#{bundle.CreateFoodTitle_price}" required="true" requiredMessage="#{bundle.CreateFoodRequiredMessage_price}"/>
+                    <h:outputLabel value="#{bundle.CreateFoodLabel_deliveryDate}" for="deliveryDate" />
+                    <h:inputText id="deliveryDate" value="#{foodController.selected.deliveryDate}" title="#{bundle.CreateFoodTitle_deliveryDate}" required="true" requiredMessage="#{bundle.CreateFoodRequiredMessage_deliveryDate}">
+                        <f:convertDateTime pattern="MM/dd/yyyy" />
+                    </h:inputText>
+                </h:panelGrid>
+                <br />
+                <h:commandLink action="#{foodController.create}" value="#{bundle.CreateFoodSaveLink}" />
+                <br />
+                <br />
+                <h:commandLink action="#{foodController.prepareList}" value="#{bundle.CreateFoodShowAllLink}" immediate="true"/>
+                <br />
+                <br />
+                <h:link outcome="/index" value="#{bundle.CreateFoodIndexLink}"/>
+            </h:form>
+        </ui:define>
+    </ui:composition>
+
+</html>
