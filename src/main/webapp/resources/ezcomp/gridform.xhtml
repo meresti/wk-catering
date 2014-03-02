@@ -9,8 +9,9 @@
 
     <!-- INTERFACE -->
     <cc:interface>
-        <cc:attribute name="controller" required="true"/>
         <cc:attribute name="var" required="true"/>
+        <cc:attribute name="current" required="true"/>
+        <cc:attribute name="values" required="true"/>
         <cc:attribute name="emptyGridMessage" required="true"/>
         <cc:attribute name="newPopupMenuText" required="true"/>
         <cc:attribute name="copyPopupMenuText" required="true"/>
@@ -20,15 +21,19 @@
         <cc:attribute name="gridFooterText"/>
         <cc:attribute name="formHeaderText"/>
         <cc:facet name="formFields" required="true"/>
+        <cc:attribute name="prepareCreate" required="true" method-signature="void action()"/>
+        <cc:attribute name="prepareCopy" required="true" method-signature="void action()"/>
+        <cc:attribute name="deleteSelected" required="true" method-signature="void action()"/>
+        <cc:attribute name="save" required="true" method-signature="void action()"/>
     </cc:interface>
 
     <!-- IMPLEMENTATION -->
     <cc:implementation>
         <h:form id ="gridForm">
             <h:panelGroup id="gridPanel"> 
-                <p:dataTable id="grid" value="#{cc.attrs.controller.lazyModel}"
+                <p:dataTable id="grid" value="#{cc.attrs.values}"
                              emptyMessage="#{cc.attrs.emptyGridMessage}"
-                             selection="#{cc.attrs.controller.current}" selectionMode="single" 
+                             selection="#{cc.attrs.current}" selectionMode="single" 
                              paginator="true" rows="10" rowsPerPageTemplate="5,10,15" paginatorPosition="top"
                              paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
                              resizableColumns="true" lazy="true">
@@ -47,21 +52,21 @@
                     </f:facet>
                 </p:dataTable>
                 <p:contextMenu for="grid">  
-                    <p:menuitem value="#{cc.attrs.newPopupMenuText}" update=":#{cc.clientId}:gridForm:formPanel :#{cc.clientId}:gridForm:gridPanel" actionListener="#{cc.attrs.controller.prepareCreate}"/>  
-                    <p:menuitem value="#{cc.attrs.copyPopupMenuText}" update=":#{cc.clientId}:gridForm:formPanel :#{cc.clientId}:gridForm:gridPanel" actionListener="#{cc.attrs.controller.prepareCopy}"/>  
-                    <p:menuitem value="#{cc.attrs.deletePopupMenuText}" update=":#{cc.clientId}:gridForm:formPanel :#{cc.clientId}:gridForm:gridPanel" actionListener="#{cc.attrs.controller.deleteSelected}"/>  
+                    <p:menuitem value="#{cc.attrs.newPopupMenuText}" update=":#{cc.clientId}:gridForm:formPanel :#{cc.clientId}:gridForm:gridPanel" actionListener="#{cc.attrs.prepareCreate}"/>  
+                    <p:menuitem value="#{cc.attrs.copyPopupMenuText}" update=":#{cc.clientId}:gridForm:formPanel :#{cc.clientId}:gridForm:gridPanel" actionListener="#{cc.attrs.prepareCopy}"/>  
+                    <p:menuitem value="#{cc.attrs.deletePopupMenuText}" update=":#{cc.clientId}:gridForm:formPanel :#{cc.clientId}:gridForm:gridPanel" actionListener="#{cc.attrs.deleteSelected}"/>  
                 </p:contextMenu> 
             </h:panelGroup>
 
             <br/>
-            
+
             <p:panelGrid id="formPanel" columns="2">
                 <f:facet name="header" rendered="#{not empty cc.attrs.formHeaderText}">
                     #{cc.attrs.formHeaderText}
                 </f:facet>
                 <cc:renderFacet name="formFields"/>
                 <f:facet name="footer">
-                    <p:commandButton action="#{cc.attrs.controller.save}" value="#{cc.attrs.saveButtonText}" update=":#{cc.clientId}:gridForm:formPanel :#{cc.clientId}:gridForm:gridPanel"/>
+                    <p:commandButton action="#{cc.attrs.save}" value="#{cc.attrs.saveButtonText}" update=":#{cc.clientId}:gridForm:formPanel :#{cc.clientId}:gridForm:gridPanel"/>
                 </f:facet>
             </p:panelGrid>
         </h:form>
