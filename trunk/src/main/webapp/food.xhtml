@@ -1,0 +1,61 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:my="http://java.sun.com/jsf/composite/ezcomp"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition template="/template.xhtml">
+        <ui:define name="title">
+            #{bundle['food.title']}
+        </ui:define>
+        <ui:define name="body">
+            <h:form id="foodForm">
+                <my:gridform id="foodGridForm" controller="#{foodController}" var="food"
+                             emptyGridMessage="#{bundle['food.emptyList']}"
+                             newPopupMenuText="#{bundle['food.new']}"
+                             copyPopupMenuText="#{bundle['food.copy']}"
+                             deletePopupMenuText="#{bundle['food.delete']}"
+                             saveButtonText="#{bundle['food.save']}"
+                             gridHeaderText="#{bundle['food.title']}"
+                             formHeaderText="#{bundle['food.details']}">
+
+                    <p:column id="id" headerText="#{bundle['food.id']}" sortBy="#{food.id}">
+                        #{food.id}
+                    </p:column>  
+                    <p:column id="name" headerText="#{bundle['food.name']}" sortBy="#{food.name}">
+                        #{food.name}
+                    </p:column>
+                    <p:column id="date" sortBy="#{food.deliveryDate}">
+                        <f:facet name="header">
+                            #{bundle['food.date']}
+                        </f:facet>
+                        <h:outputText value="#{food.deliveryDate}">
+                            <!--<f:convertDateTime pattern="#{foodController.dateFormat}"/>-->
+                        </h:outputText>
+                    </p:column>
+                    <p:column id="price" headerText="#{bundle['food.price']}" sortBy="#{food.price}">
+                        #{food.price}
+                    </p:column>
+
+                    <f:facet name="formFields">
+                        <p:panelGrid columns="2">
+                            <p:outputLabel value="#{bundle['food.name']}" for="name" />
+                            <p:inputText id="name" value="#{foodController.current.name}" title="#{bundle['food.name']}"/>
+
+                            <p:outputLabel value="#{bundle['food.date']}" for="date" />
+                            <p:calendar id="date" value="#{foodController.current.deliveryDate}" pattern="#{foodController.dateFormat}"/>
+
+                            <p:outputLabel value="#{bundle['food.price']}" for="price" />
+                            <p:inputText id="price" value="#{foodController.current.price}" title="#{bundle['food.price']}"/>
+                        </p:panelGrid>
+                    </f:facet>
+                </my:gridform>
+            </h:form>
+        </ui:define>
+    </ui:composition>
+
+</html>
+
