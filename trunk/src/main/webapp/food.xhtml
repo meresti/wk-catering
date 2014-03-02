@@ -13,14 +13,21 @@
         </ui:define>
         <ui:define name="body">
             <h:form id="foodForm">
-                <my:gridform id="foodGridForm" controller="#{foodController}" var="food"
+                <my:gridform id="foodGridForm"
+                             var="food"
                              emptyGridMessage="#{bundle['food.emptyList']}"
                              newPopupMenuText="#{bundle['food.new']}"
                              copyPopupMenuText="#{bundle['food.copy']}"
                              deletePopupMenuText="#{bundle['food.delete']}"
                              saveButtonText="#{bundle['food.save']}"
                              gridHeaderText="#{bundle['food.title']}"
-                             formHeaderText="#{bundle['food.details']}">
+                             formHeaderText="#{bundle['food.details']}"
+                             values="#{foodController.lazyModel}"
+                             current="#{foodController.current}"
+                             prepareCreate="#{foodController.prepareCreate}"
+                             prepareCopy="#{foodController.prepareCopy}"
+                             deleteSelected="#{foodController.deleteSelected}"
+                             save="#{foodController.save}">
 
                     <p:column id="id" headerText="#{bundle['food.id']}" sortBy="#{food.id}">
                         #{food.id}
@@ -33,7 +40,7 @@
                             #{bundle['food.date']}
                         </f:facet>
                         <h:outputText value="#{food.deliveryDate}">
-                            <!--<f:convertDateTime pattern="#{foodController.dateFormat}"/>-->
+                            <f:convertDateTime pattern="#{foodController.dateFormat}"/>
                         </h:outputText>
                     </p:column>
                     <p:column id="price" headerText="#{bundle['food.price']}" sortBy="#{food.price}">
