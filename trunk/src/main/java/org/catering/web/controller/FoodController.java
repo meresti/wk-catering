@@ -52,17 +52,32 @@ public class FoodController extends AbstractController<Food> {
     }
 
     @Override
-    protected String getSucessfullyDeletedMessageTag() {
+    protected String getDeleteSuccededMessageTag() {
         return "food.deleted";
     }
 
     @Override
-    protected String getSucessfullyUpdatedMessageTag() {
+    protected String getDeleteFailedMessageTag() {
+        return "food.delete.failed";
+    }
+
+    @Override
+    protected String getUpdateSuccededMessageTag() {
         return "food.updated";
     }
 
     @Override
-    protected String getSucessfullyCreatedMessageTag() {
+    protected String getUpdateFailedMessageTag() {
+        return "food.update.failed";
+    }
+
+    @Override
+    protected String getCreateSuccededMessageTag() {
         return "food.created";
+    }
+
+    @Override
+    protected String getCreateFailedMessageTag() {
+        return "food.create.failed";
     }
 }
