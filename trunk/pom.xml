@@ -101,11 +101,19 @@
             <scope>provided</scope>
         </dependency>
         
+        <!--Primefaces-->
         <dependency>  
             <groupId>org.primefaces</groupId>  
             <artifactId>primefaces</artifactId>  
             <version>${primefaces.version}</version>  
-        </dependency> 
+        </dependency>
+        
+        <dependency>
+            <groupId>org.jasypt</groupId>
+            <artifactId>jasypt</artifactId>
+            <version>1.9.2</version>
+            <scope>compile</scope>
+        </dependency>
     </dependencies>
 
     <build>

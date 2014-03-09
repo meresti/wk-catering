@@ -28,6 +28,7 @@
 
                     <p:submenu label="#{loginController.authenticatedUser.name}" style="float: right;">
                         <p:menuitem value="#{bundle['auth.logout']}" action="#{loginController.logout}"/>
+                        <p:menuitem value="#{bundle['auth.change.password']}" url="/login/changepassword.xhtml"/>
                     </p:submenu>
                 </p:menubar>
             </h:form>
