@@ -10,13 +10,13 @@
 
             <h:panelGrid columns="2">
                 <h:outputLabel value="#{bundle['auth.user.name']}" for="username" />
-                <h:inputText id="username" value="#{userController.username}" />
+                <h:inputText id="username" value="#{loginController.username}" />
 
                 <h:outputLabel value="#{bundle['auth.user.password']}" for="password" />
-                <h:inputSecret id="password" value="#{userController.password}" />
+                <h:inputSecret id="password" value="#{loginController.password}" />
 
-                <h:commandButton action="#{userController.login}" value="#{bundle['auth.login']}" rendered="#{!userController.logged}" />
-                <h:commandButton action="#{userController.logout}" value="#{bundle['auth.logout']}" rendered="#{userController.logged}" />
+                <h:commandButton action="#{loginController.login}" value="#{bundle['auth.login']}" rendered="#{!loginController.logged}" />
+                <h:commandButton action="#{loginController.logout}" value="#{bundle['auth.logout']}" rendered="#{loginController.logged}" />
 
             </h:panelGrid>
 

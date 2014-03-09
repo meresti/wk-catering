@@ -6,13 +6,17 @@
 package org.catering.web.controller.util;
 
 import java.util.List;
+import java.util.ResourceBundle;
 import javax.faces.application.FacesMessage;
+import javax.faces.application.FacesMessage.Severity;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.model.SelectItem;
 
 public class JsfUtil {
+
+    private static final String BUNDLE = "messages.Messages";
 
     public static SelectItem[] getSelectItems(List<?> entities, boolean selectOne) {
         int size = selectOne ? entities.size() + 1 : entities.size();
@@ -28,29 +32,28 @@ public class JsfUtil {
         return items;
     }
 
-    public static void addErrorMessage(Exception ex, String defaultMsg) {
-        String msg = ex.getLocalizedMessage();
-        if (msg != null && msg.length() > 0) {
-            addErrorMessage(msg);
-        } else {
-            addErrorMessage(defaultMsg);
-        }
+    public static void addErrorMessage(Exception ex, String messageTag) {
+        final String message = getTranslatedMessage(messageTag);
+        addMessage(message, ex.getLocalizedMessage(), FacesMessage.SEVERITY_ERROR, null);
     }
 
-    public static void addErrorMessages(List<String> messages) {
-        for (String message : messages) {
-            addErrorMessage(message);
-        }
+    public static void addErrorMessage(String messageTag) {
+        final String message = getTranslatedMessage(messageTag);
+        addMessage(message, message, FacesMessage.SEVERITY_ERROR, null);
     }
 
-    public static void addErrorMessage(String msg) {
-        FacesMessage facesMsg = new FacesMessage(FacesMessage.SEVERITY_ERROR, msg, msg);
-        FacesContext.getCurrentInstance().addMessage(null, facesMsg);
+    public static void addSuccessMessage(String messageTag) {
+        final String message = getTranslatedMessage(messageTag);
+        addMessage(message, message, FacesMessage.SEVERITY_INFO, "successInfo");
     }
 
-    public static void addSuccessMessage(String msg) {
-        FacesMessage facesMsg = new FacesMessage(FacesMessage.SEVERITY_INFO, msg, msg);
-        FacesContext.getCurrentInstance().addMessage("successInfo", facesMsg);
+    private static void addMessage(final String summary, final String details, final Severity severity, final String clientId) {
+        FacesMessage facesMsg = new FacesMessage(severity, summary, details);
+        FacesContext.getCurrentInstance().addMessage(clientId, facesMsg);
+    }
+
+    private static String getTranslatedMessage(String messageTag) {
+        return ResourceBundle.getBundle(BUNDLE).getString(messageTag);
     }
 
     public static String getRequestParameter(String key) {
@@ -61,5 +64,4 @@ public class JsfUtil {
         String theId = JsfUtil.getRequestParameter(requestParameterName);
         return converter.getAsObject(FacesContext.getCurrentInstance(), component, theId);
     }
-
 }

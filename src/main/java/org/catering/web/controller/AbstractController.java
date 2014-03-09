@@ -1,7 +1,6 @@
 package org.catering.web.controller;
 
 import java.io.Serializable;
-import java.util.ResourceBundle;
 import org.catering.ejb.AbstractFacade;
 import org.catering.web.controller.util.JsfUtil;
 import org.primefaces.model.LazyDataModel;
@@ -49,11 +48,17 @@ public abstract class AbstractController<T> implements Serializable {
 
     protected abstract T createCopy();
 
-    protected abstract String getSucessfullyDeletedMessageTag();
+    protected abstract String getDeleteSuccededMessageTag();
 
-    protected abstract String getSucessfullyUpdatedMessageTag();
+    protected abstract String getDeleteFailedMessageTag();
 
-    protected abstract String getSucessfullyCreatedMessageTag();
+    protected abstract String getUpdateSuccededMessageTag();
+
+    protected abstract String getUpdateFailedMessageTag();
+
+    protected abstract String getCreateSuccededMessageTag();
+
+    protected abstract String getCreateFailedMessageTag();
 
     public void prepareCreate() {
         setCurrent(createNew());
@@ -77,18 +82,18 @@ public abstract class AbstractController<T> implements Serializable {
         try {
             getFacade().create(getCurrent());
             setCurrentIsNew(false);
-            JsfUtil.addSuccessMessage(ResourceBundle.getBundle("Bundle").getString(getSucessfullyCreatedMessageTag()));
+            JsfUtil.addSuccessMessage(getCreateSuccededMessageTag());
         } catch (Exception e) {
-            JsfUtil.addErrorMessage(e, ResourceBundle.getBundle("Bundle").getString("PersistenceErrorOccured"));
+            JsfUtil.addErrorMessage(e, getCreateFailedMessageTag());
         }
     }
 
     protected void update() {
         try {
             getFacade().edit(getCurrent());
-            JsfUtil.addSuccessMessage(ResourceBundle.getBundle("Bundle").getString(getSucessfullyUpdatedMessageTag()));
+            JsfUtil.addSuccessMessage(getUpdateSuccededMessageTag());
         } catch (Exception e) {
-            JsfUtil.addErrorMessage(e, ResourceBundle.getBundle("Bundle").getString("PersistenceErrorOccured"));
+            JsfUtil.addErrorMessage(e, getUpdateFailedMessageTag());
         }
     }
 
@@ -96,9 +101,9 @@ public abstract class AbstractController<T> implements Serializable {
         try {
             getFacade().remove(getCurrent());
             prepareCreate();
-            JsfUtil.addSuccessMessage(ResourceBundle.getBundle("Bundle").getString(getSucessfullyDeletedMessageTag()));
+            JsfUtil.addSuccessMessage(getDeleteSuccededMessageTag());
         } catch (Exception e) {
-            JsfUtil.addErrorMessage(e, ResourceBundle.getBundle("Bundle").getString("PersistenceErrorOccured"));
+            JsfUtil.addErrorMessage(e, getDeleteFailedMessageTag());
         }
     }
 }

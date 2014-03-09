@@ -26,8 +26,8 @@
 
                     <p:menuitem value="Demo" url="/demo.xhtml" />
 
-                    <p:submenu label="#{userController.authenticatedUser.name}" style="float: right;">
-                        <p:menuitem value="#{bundle['auth.logout']}" action="#{userController.logout}"/>
+                    <p:submenu label="#{loginController.authenticatedUser.name}" style="float: right;">
+                        <p:menuitem value="#{bundle['auth.logout']}" action="#{loginController.logout}"/>
                     </p:submenu>
                 </p:menubar>
             </h:form>

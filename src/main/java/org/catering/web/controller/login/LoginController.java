@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.catering.web.controller;
+package org.catering.web.controller.login;
 
 import java.io.Serializable;
 import java.util.logging.Level;
@@ -23,20 +23,21 @@ import org.catering.qualifier.LoggedIn;
 import org.catering.web.controller.util.JsfUtil;
 
 /**
- * UserController is an authorization controller responsible for user
+ * LoginController is an authorization controller responsible for user
  * login/logout actions
  */
-@Named(value = "userController")
+@Named(value = "loginController")
 @SessionScoped
-public class UserController implements Serializable {
+public class LoginController implements Serializable {
 
     private User user;
 
     private String username;
+
     private String password;
 
     @EJB
-    private UserBean ejbFacade;
+    private UserBean userBean;
 
     /**
      * Login method based on <code>HttpServletRequest</code> and security realm
@@ -49,23 +50,15 @@ public class UserController implements Serializable {
         try {
             request.login(this.getUsername(), this.getPassword());
 
-            this.user = ejbFacade.getUserByName(getUsername());
+            this.user = userBean.getUserByName(getUsername());
             this.getAuthenticatedUser();
 
-//            if (isAdmin(user)) {
-//                result = "/admin/index";
-            result = "/index";
-            JsfUtil.addSuccessMessage("Login Success! Welcome back!");
-//            } else {
-//                JsfUtil.addErrorMessage("You're not a system administrator and cannot access this page.");
-//                result = this.logout();
-//            }
+            result = "index";
+            JsfUtil.addSuccessMessage("auth.login.succeded");
         } catch (ServletException ex) {
-            Logger.getLogger(UserController.class.getName()).log(Level.SEVERE, null, ex);
-
-            //TODO: add message to resources bundle
-            JsfUtil.addErrorMessage("Invalid user or password. Login invalid!");
-            result = "/login";
+            Logger.getLogger(LoginController.class.getName()).log(Level.SEVERE, null, ex);
+            JsfUtil.addErrorMessage("auth.login.failed");
+            result = "login";
         }
 
         return result;
@@ -88,23 +81,14 @@ public class UserController implements Serializable {
 
             ((HttpSession) context.getExternalContext().getSession(false)).invalidate();
             request.logout();
-            //TODO: add message to resources bundle
-            JsfUtil.addSuccessMessage("User successfully logged out! ");
+            JsfUtil.addSuccessMessage("auth.logout.succeded");
 
         } catch (ServletException ex) {
-            Logger.getLogger(UserController.class.getName()).log(Level.SEVERE, null, ex);
-            //TODO: add message to resources bundle
-            JsfUtil.addErrorMessage("Critical error during logout process.");
+            Logger.getLogger(LoginController.class.getName()).log(Level.SEVERE, null, ex);
+            JsfUtil.addErrorMessage("auth.logout.failed");
         }
 
         return "/index.xhtml?faces-redirect=true";
-    }
-
-    /**
-     * @return the ejbFacade
-     */
-    public UserBean getEjbFacade() {
-        return ejbFacade;
     }
 
     public @Produces
@@ -114,7 +98,7 @@ public class UserController implements Serializable {
     }
 
     public boolean isLogged() {
-        return getUser() != null;
+        return user != null;
     }
 
     /**
@@ -143,12 +127,5 @@ public class UserController implements Serializable {
      */
     public void setPassword(String password) {
         this.password = password;
-    }
-
-    /**
-     * @return the user
-     */
-    public User getUser() {
-        return user;
     }
 }
