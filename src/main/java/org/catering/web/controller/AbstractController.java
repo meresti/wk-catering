@@ -2,7 +2,7 @@ package org.catering.web.controller;
 
 import java.io.Serializable;
 import org.catering.ejb.AbstractFacade;
-import org.catering.web.controller.util.JsfUtil;
+import org.catering.web.util.JsfUtil;
 import org.primefaces.model.LazyDataModel;
 
 public abstract class AbstractController<T> implements Serializable {
