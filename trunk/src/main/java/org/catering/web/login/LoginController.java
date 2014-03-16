@@ -40,9 +40,6 @@ public class LoginController implements Serializable {
     @EJB
     private UserBean userBean;
 
-    @Inject
-    private PasswordBean passwordBean;
-
     /**
      * @return the username
      */
@@ -132,15 +129,5 @@ public class LoginController implements Serializable {
         }
 
         return "/index.xhtml?faces-redirect=true";
-    }
-
-    public String changePassword() {
-        final String encrypted = passwordBean.encryptPassword(password);
-        this.password = null;
-        final User authenticatedUser = getAuthenticatedUser();
-        authenticatedUser.setPassword(encrypted);
-        userBean.edit(authenticatedUser);
-        JsfUtil.addSuccessMessage("auth.password.changed");
-        return "/index";
     }
 }
