@@ -6,28 +6,35 @@ package org.catering.web.login;
  * and open the template in the editor.
  */
 import javax.enterprise.context.RequestScoped;
-import org.jasypt.util.password.ConfigurablePasswordEncryptor;
+import org.jasypt.commons.CommonUtils;
+import org.jasypt.digest.StandardStringDigester;
 
 @RequestScoped
 public class PasswordBean {
 
     private static final String DIGEST_ALGORITHM = "SHA-256";
 
+    private static final int ITERATION_COUNT = 1;
+
+    private static final int SALT_SIZE = 0;
+
     public String encryptPassword(String value) {
-        final ConfigurablePasswordEncryptor passwordEncryptor = createPasswordEncryptor();
-        return passwordEncryptor.encryptPassword(value);
+        final StandardStringDigester digester = createDigester();
+        return digester.digest(value);
     }
 
-    private ConfigurablePasswordEncryptor createPasswordEncryptor() {
-        final ConfigurablePasswordEncryptor passwordEncryptor = new ConfigurablePasswordEncryptor();
-        passwordEncryptor.setPlainDigest(true);
-        passwordEncryptor.setAlgorithm(DIGEST_ALGORITHM);
-        passwordEncryptor.setStringOutputType("hexadecimal");
-        return passwordEncryptor;
+    private StandardStringDigester createDigester() {
+        final StandardStringDigester digester = new StandardStringDigester();
+        digester.setIterations(ITERATION_COUNT);
+        digester.setSaltSizeBytes(SALT_SIZE);
+        digester.setAlgorithm(DIGEST_ALGORITHM);
+        digester.setStringOutputType(CommonUtils.STRING_OUTPUT_TYPE_HEXADECIMAL);
+        digester.initialize();
+        return digester;
     }
 
     public boolean checkPassword(String plainPassword, String encryptedPassword) {
-        final ConfigurablePasswordEncryptor passwordEncryptor = createPasswordEncryptor();
-        return passwordEncryptor.checkPassword(plainPassword, encryptedPassword);
+        final StandardStringDigester digester = createDigester();
+        return digester.matches(plainPassword, encryptedPassword);
     }
 }
