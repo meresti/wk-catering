@@ -21,14 +21,14 @@
                     </p:submenu>
 
                     <p:submenu label="#{bundle['menu.administration']}">
-                        <p:menuitem value="#{bundle['menu.food']}" url="/food.xhtml" />
+                        <p:menuitem value="#{bundle['menu.food']}" url="/admin/food.xhtml" />
                     </p:submenu>
 
                     <p:menuitem value="Demo" url="/demo.xhtml" />
 
                     <p:submenu label="#{loginController.authenticatedUser.name}" style="float: right;">
                         <p:menuitem value="#{bundle['auth.logout']}" action="#{loginController.logout}"/>
-                        <p:menuitem value="#{bundle['auth.change.password']}" url="/usersetting/changepassword.xhtml"/>
+                        <p:menuitem value="#{bundle['auth.change.password']}" url="/user/usersetting/changepassword.xhtml"/>
                     </p:submenu>
                 </p:menubar>
             </h:form>

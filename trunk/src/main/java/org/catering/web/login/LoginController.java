@@ -68,9 +68,9 @@ public class LoginController implements Serializable {
         this.password = password;
     }
 
-    public @Produces
+    @Produces
     @LoggedIn
-    User getAuthenticatedUser() {
+    public User getAuthenticatedUser() {
         return user;
     }
 
@@ -128,6 +128,6 @@ public class LoginController implements Serializable {
             JsfUtil.addErrorMessage("auth.logout.failed");
         }
 
-        return "/index.xhtml?faces-redirect=true";
+        return "/user/index.xhtml?faces-redirect=true";
     }
 }

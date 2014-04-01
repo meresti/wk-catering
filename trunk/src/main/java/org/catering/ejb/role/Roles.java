@@ -7,7 +7,7 @@ package org.catering.ejb.role;
 
 public enum Roles {
 
-    ADMINS,
-    USERS,
-    QUESTS
+    ADMIN,
+    USER,
+    QUEST
 }
