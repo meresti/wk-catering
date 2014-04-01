@@ -2,6 +2,7 @@ package org.catering.web.controller;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
+import javax.ejb.Stateful;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import org.catering.ejb.FoodBean;
@@ -9,6 +10,7 @@ import org.catering.model.Food;
 
 @Named("foodController")
 @ViewScoped
+@Stateful
 public class FoodController extends AbstractController<Food> {
 
     @EJB
