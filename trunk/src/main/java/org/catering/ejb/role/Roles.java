@@ -5,9 +5,8 @@
  */
 package org.catering.ejb.role;
 
-public enum Roles {
-
-    ADMIN,
-    USER,
-    QUEST
+public class Roles {
+    public static final String ADMIN = "ADMIN";
+    public static final String USER = "USER";
+    public static final String GUEST = "GUEST";
 }

@@ -10,11 +10,11 @@ import javax.annotation.security.RolesAllowed;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import org.catering.ejb.role.Roles;
 import org.catering.model.Food;
 
 @Stateless
-@DeclareRoles({"ADMIN", "USER", "GUEST"})
-@RolesAllowed({"ADMIN", "USER", "GUEST"})
+@DeclareRoles({Roles.ADMIN, Roles.USER, Roles.GUEST})
 public class FoodBean extends AbstractFacade<Food> {
 
     @PersistenceContext(unitName = "catering-ejbPU")
@@ -30,19 +30,19 @@ public class FoodBean extends AbstractFacade<Food> {
     }
 
     @Override
-    @RolesAllowed({"ADMIN"})
+    @RolesAllowed(Roles.ADMIN)
     public void remove(Food entity) {
         super.remove(entity);
     }
 
     @Override
-    @RolesAllowed({"ADMIN"})
+    @RolesAllowed(Roles.ADMIN)
     public void edit(Food entity) {
         super.edit(entity);
     }
 
     @Override
-    @RolesAllowed({"ADMIN"})
+    @RolesAllowed(Roles.ADMIN)
     public void create(Food entity) {
         super.create(entity);
     }
