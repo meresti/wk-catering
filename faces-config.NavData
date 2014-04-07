@@ -3,8 +3,8 @@
     <Scope Scope="Faces Configuration Only"/>
     <Scope Scope="Project">
         <Node id="resources/ezcomp/gridform.xhtml" x="478" y="279" zoom="true"/>
-        <Node id="user/index.xhtml" x="366" y="26" zoom="true"/>
         <Node id="user/usersetting/changepassword.xhtml" x="534" y="135" zoom="true"/>
+        <Node id="user/index.xhtml" x="366" y="26" zoom="true"/>
         <Node id="admin/food.xhtml" x="50" y="217" zoom="true"/>
         <Node id="login/login.xhtml" x="86" y="61" zoom="true"/>
     </Scope>
