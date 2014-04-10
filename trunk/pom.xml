@@ -16,6 +16,29 @@
 
 		<glassfish.home>${glassfish.home.prefix}/glassfish4</glassfish.home>
 
+        <database.groupId>com.oracle</database.groupId>
+        <database.artifactId>ojdbc6</database.artifactId>
+        <database.version>11.2.0.2.0</database.version>
+
+        <database.driver.class>oracle.jdbc.OracleDriver</database.driver.class>
+        <database.url>jdbc:oracle:thin:@//localhost:1521/ORACLE</database.url>
+        <database.admin.username>system</database.admin.username>
+        <database.admin.password>manager</database.admin.password>
+        <database.username>CATERING</database.username>
+        <database.password>CATERING</database.password>
+        <database.temptablespace>TEMP</database.temptablespace>
+        <database.usertablespace>USERS</database.usertablespace>
+
+        <database.delimiter>;</database.delimiter>
+        <database.sqlCreate>
+            create user ${database.username} identified by "${database.password}" default tablespace
+            "${database.usertablespace}" temporary tablespace "${database.temptablespace}" profile "DEFAULT";
+            grant connect to ${database.username};
+            grant resource to ${database.username};
+            grant create view to ${database.username};
+        </database.sqlCreate>
+
+
 		<eclipselink.version>2.5.1</eclipselink.version>
 		<eclipse.jpa.modelgen.version>2.5.1</eclipse.jpa.modelgen.version>
 		<javaee.api.version>7.0</javaee.api.version>
@@ -80,6 +103,54 @@
 				<cargo.maven.containerUrl>http://dlc.sun.com.edgesuite.net/glassfish/4.0/promoted/latest-glassfish.zip</cargo.maven.containerUrl>
 			</properties>
 		</profile>
+        <profile>
+            <id>db-setup</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>sql-maven-plugin</artifactId>
+                        <version>1.5</version>
+                        <dependencies>
+                            <dependency>
+                                <!-- Adds the correct JDBC driver as a dependency of this plugin -->
+                                <groupId>${database.groupId}</groupId>
+                                <artifactId>${database.artifactId}</artifactId>
+                                <version>${database.version}</version>
+                            </dependency>
+                        </dependencies>
+                        <configuration>
+                            <!-- common configuration shared by all executions -->
+                            <driver>${database.driver.class}</driver>
+                            <username>${database.username}</username>
+                            <password>${database.password}</password>
+                            <url>${database.url}</url>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <!-- then create a new database -->
+                                <id>create-db</id>
+                                <phase>generate-resources</phase>
+                                <goals>
+                                    <goal>execute</goal>
+                                </goals>
+                                <configuration>
+                                    <!-- Can't use regular URL in case database doesn't exist -->
+                                    <!--<url>${database.url.alternate}</url>-->
+                                    <username>${database.admin.username}</username>
+                                    <password>${database.admin.password}</password>
+                                    <autocommit>true</autocommit>
+                                    <delimiter>${database.delimiter}</delimiter>
+                                    <sqlCommand>${database.sqlCreate}</sqlCommand>
+                                    <onError>continue</onError>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
 	</profiles>
 
 	<dependencies>
