@@ -31,13 +31,19 @@
 
         <database.delimiter>;</database.delimiter>
         <database.sqlCreate>
-            create user ${database.username} identified by "${database.password}" default tablespace
-            "${database.usertablespace}" temporary tablespace "${database.temptablespace}" profile "DEFAULT";
-            grant connect to ${database.username};
-            grant resource to ${database.username};
-            grant create view to ${database.username};
+            <![CDATA[
+                create user ${database.username} identified by "${database.password}" default tablespace
+                "${database.usertablespace}" temporary tablespace "${database.temptablespace}" profile "DEFAULT";
+                grant connect to ${database.username};
+                grant resource to ${database.username};
+                grant create view to ${database.username};
+            ]]>
         </database.sqlCreate>
-
+        <database.sqlDrop>
+            <![CDATA[
+                drop user ${database.username} cascade;
+            ]]>
+        </database.sqlDrop>
 
 		<eclipselink.version>2.5.1</eclipselink.version>
 		<eclipse.jpa.modelgen.version>2.5.1</eclipse.jpa.modelgen.version>
@@ -125,24 +131,58 @@
                             <username>${database.username}</username>
                             <password>${database.password}</password>
                             <url>${database.url}</url>
+                            <delimiter>${database.delimiter}</delimiter>
+                            <autocommit>true</autocommit>
+                            <onError>abort</onError>
                         </configuration>
                         <executions>
                             <execution>
-                                <!-- then create a new database -->
+                                <id>drop-db-if-any</id>
+                                <phase>generate-resources</phase>
+                                <goals>
+                                    <goal>execute</goal>
+                                </goals>
+                                <configuration>
+                                    <username>${database.admin.username}</username>
+                                    <password>${database.admin.password}</password>
+                                    <sqlCommand>${database.sqlDrop}</sqlCommand>
+                                    <onError>continue</onError>
+                                </configuration>
+                            </execution>
+                            <execution>
                                 <id>create-db</id>
                                 <phase>generate-resources</phase>
                                 <goals>
                                     <goal>execute</goal>
                                 </goals>
                                 <configuration>
-                                    <!-- Can't use regular URL in case database doesn't exist -->
-                                    <!--<url>${database.url.alternate}</url>-->
                                     <username>${database.admin.username}</username>
                                     <password>${database.admin.password}</password>
-                                    <autocommit>true</autocommit>
-                                    <delimiter>${database.delimiter}</delimiter>
                                     <sqlCommand>${database.sqlCreate}</sqlCommand>
-                                    <onError>continue</onError>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>create-schema</id>
+                                <phase>generate-resources</phase>
+                                <goals>
+                                    <goal>execute</goal>
+                                </goals>
+                                <configuration>
+                                    <srcFiles>
+                                        <srcFile>${project.basedir}/src/main/resources/sql/oracle/create-schema-oracle.sql</srcFile>
+                                    </srcFiles>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>load-data</id>
+                                <phase>generate-resources</phase>
+                                <goals>
+                                    <goal>execute</goal>
+                                </goals>
+                                <configuration>
+                                    <srcFiles>
+                                        <srcFile>${project.basedir}/src/main/resources/sql/oracle/populate-schema-oracle.sql</srcFile>
+                                    </srcFiles>
                                 </configuration>
                             </execution>
                         </executions>
