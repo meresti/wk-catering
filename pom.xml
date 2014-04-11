@@ -15,6 +15,9 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
 		<glassfish.home>${glassfish.home.prefix}/glassfish4</glassfish.home>
+        <glassfish.domain>domain1</glassfish.domain>
+        <glassfish.connectionpool>cateringPool</glassfish.connectionpool>
+        <glassfish.jdbc.resource>jdbc/catering</glassfish.jdbc.resource>
 
         <database.groupId>com.oracle</database.groupId>
         <database.artifactId>ojdbc6</database.artifactId>
@@ -25,7 +28,7 @@
         <database.admin.username>system</database.admin.username>
         <database.admin.password>manager</database.admin.password>
         <database.username>CATERING</database.username>
-        <database.password>CATERING</database.password>
+        <database.password>catering</database.password>
         <database.temptablespace>TEMP</database.temptablespace>
         <database.usertablespace>USERS</database.usertablespace>
 
@@ -190,7 +193,112 @@
                 </plugins>
             </build>
         </profile>
-
+        <profile>
+            <id>GlassFish-setup</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>exec-maven-plugin</artifactId>
+                        <version>${maven.exec.plugin.version}</version>
+                        <configuration>
+                            <executable>${glassfish.home}/bin/asadmin${glassfish.executables.suffix}</executable>
+                            <successCodes>
+                                <successCode>0</successCode>
+                                <successCode>1</successCode>
+                            </successCodes>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>start-server</id>
+                                <phase>generate-resources</phase>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <configuration>
+                                    <arguments>
+                                        <argument>start-domain</argument>
+                                        <argument>${glassfish.domain}</argument>
+                                    </arguments>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>create-connection-pool</id>
+                                <phase>generate-resources</phase>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <configuration>
+                                    <arguments>
+                                        <argument>create-jdbc-connection-pool</argument>
+                                        <argument>--datasourceclassname</argument>
+                                        <argument>oracle.jdbc.pool.OracleDataSource</argument>
+                                        <argument>--restype</argument>
+                                        <argument>javax.sql.DataSource</argument>
+                                        <argument>--validationmethod</argument>
+                                        <argument>table</argument>
+                                        <argument>--validationtable</argument>
+                                        <argument>sys.systables</argument>
+                                        <argument>--failconnection</argument>
+                                        <argument>true</argument>
+                                        <argument>--validateatmostonceperiod</argument>
+                                        <argument>10</argument>
+                                        <argument>--property</argument>
+                                        <argument>user=${database.username}:password=${database.password}:url='${database.url}'</argument>
+                                        <argument>${glassfish.connectionpool}</argument>
+                                    </arguments>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>create-jdbc-resource</id>
+                                <phase>generate-resources</phase>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <configuration>
+                                    <arguments>
+                                        <argument>create-jdbc-resource</argument>
+                                        <argument>--connectionpoolid</argument>
+                                        <argument>${glassfish.connectionpool}</argument>
+                                        <argument>${glassfish.jdbc.resource}</argument>
+                                    </arguments>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>create-realm</id>
+                                <phase>generate-resources</phase>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <configuration>
+                                    <arguments>
+                                        <argument>create-auth-realm</argument>
+                                        <argument>--classname</argument>
+                                        <argument>com.sun.enterprise.security.ee.auth.realm.jdbc.JDBCRealm</argument>
+                                        <argument>--property</argument>
+                                        <argument>jaas-context=jdbcRealm:datasource-jndi='jdbc/catering':user-table=USERS:user-name-column=NAME:password-column=PASSWORD:group-table=W_USER_GROUPS:group-table-user-name-column=USER_NAME:group-name-column=GROUP_NAME:digestrealm-password-enc-algorithm=SHA-256:digest-algorithm=SHA-256</argument>
+                                        <argument>cateringRealm</argument>
+                                    </arguments>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>stop-server</id>
+                                <phase>generate-resources</phase>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <configuration>
+                                    <arguments>
+                                        <argument>stop-domain</argument>
+                                        <argument>${glassfish.domain}</argument>
+                                    </arguments>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
 	</profiles>
 
 	<dependencies>
@@ -249,36 +357,6 @@
 					<version>${maven.war.plugin.version}</version>
 					<configuration>
 						<failOnMissingWebXml>false</failOnMissingWebXml>
-					</configuration>
-				</plugin>
-				<plugin>
-					<groupId>org.codehaus.mojo</groupId>
-					<artifactId>exec-maven-plugin</artifactId>
-					<version>${maven.exec.plugin.version}</version>
-					<executions>
-						<execution>
-							<id>create-catering-realm</id>
-							<phase>process-resources</phase>
-							<goals>
-								<goal>exec</goal>
-							</goals>
-						</execution>
-					</executions>
-					<configuration>
-						<skip>false</skip>
-						<executable>${glassfish.home}/bin/asadmin${glassfish.executables.suffix}</executable>
-						<arguments>
-							<argument>create-auth-realm</argument>
-							<argument>--classname</argument>
-							<argument>com.sun.enterprise.security.ee.auth.realm.jdbc.JDBCRealm</argument>
-							<argument>--property</argument>
-							<argument>jaas-context=jdbcRealm:datasource-jndi='jdbc/catering':user-table=USERS:user-name-column=NAME:password-column=PASSWORD:group-table=W_USER_GROUPS:group-table-user-name-column=USER_NAME:group-name-column=GROUP_NAME:digestrealm-password-enc-algorithm=SHA-256:digest-algorithm=SHA-256</argument>
-							<argument>cateringRealm</argument>
-						</arguments>
-						<successCodes>
-							<successCode>0</successCode>
-							<successCode>1</successCode>
-						</successCodes>
 					</configuration>
 				</plugin>
 			</plugins>
