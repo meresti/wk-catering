@@ -18,6 +18,7 @@
         <glassfish.domain>domain1</glassfish.domain>
         <glassfish.connectionpool>cateringPool</glassfish.connectionpool>
         <glassfish.jdbc.resource>jdbc/catering</glassfish.jdbc.resource>
+        <glassfish.realm>cateringRealm</glassfish.realm>
 
         <database.groupId>com.oracle</database.groupId>
         <database.artifactId>ojdbc6</database.artifactId>
@@ -223,6 +224,45 @@
                                 </configuration>
                             </execution>
                             <execution>
+                                <id>delete-realm</id>
+                                <phase>generate-resources</phase>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <configuration>
+                                    <arguments>
+                                        <argument>delete-auth-realm</argument>
+                                        <argument>${glassfish.realm}</argument>
+                                    </arguments>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>delete-jdbc-resource</id>
+                                <phase>generate-resources</phase>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <configuration>
+                                    <arguments>
+                                        <argument>delete-jdbc-resource</argument>
+                                        <argument>${glassfish.jdbc.resource}</argument>
+                                    </arguments>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>delete-connection-pool</id>
+                                <phase>generate-resources</phase>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <configuration>
+                                    <arguments>
+                                        <argument>delete-jdbc-connection-pool</argument>
+                                        <argument>${glassfish.connectionpool}</argument>
+                                    </arguments>
+                                </configuration>
+                            </execution>
+                            <execution>
                                 <id>create-connection-pool</id>
                                 <phase>generate-resources</phase>
                                 <goals>
@@ -277,7 +317,7 @@
                                         <argument>com.sun.enterprise.security.ee.auth.realm.jdbc.JDBCRealm</argument>
                                         <argument>--property</argument>
                                         <argument>jaas-context=jdbcRealm:datasource-jndi='jdbc/catering':user-table=USERS:user-name-column=NAME:password-column=PASSWORD:group-table=W_USER_GROUPS:group-table-user-name-column=USER_NAME:group-name-column=GROUP_NAME:digestrealm-password-enc-algorithm=SHA-256:digest-algorithm=SHA-256</argument>
-                                        <argument>cateringRealm</argument>
+                                        <argument>${glassfish.realm}</argument>
                                     </arguments>
                                 </configuration>
                             </execution>
