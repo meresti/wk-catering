@@ -16,6 +16,7 @@
 
 		<glassfish.home>${glassfish.home.prefix}/glassfish4</glassfish.home>
         <glassfish.domain>domain1</glassfish.domain>
+        <glassfish.datasource>oracle.jdbc.pool.OracleDataSource</glassfish.datasource>
         <glassfish.connectionpool>cateringPool</glassfish.connectionpool>
         <glassfish.jdbc.resource>jdbc/catering</glassfish.jdbc.resource>
         <glassfish.realm>cateringRealm</glassfish.realm>
@@ -48,6 +49,8 @@
                 drop user ${database.username} cascade;
             ]]>
         </database.sqlDrop>
+        <database.createSchema.file>${project.basedir}/src/main/resources/sql/oracle/create-schema-oracle.sql</database.createSchema.file>
+        <database.populate.file>${project.basedir}/src/main/resources/sql/oracle/populate-schema-oracle.sql</database.populate.file>
 
 		<eclipselink.version>2.5.1</eclipselink.version>
 		<eclipse.jpa.modelgen.version>2.5.1</eclipse.jpa.modelgen.version>
@@ -173,7 +176,7 @@
                                 </goals>
                                 <configuration>
                                     <srcFiles>
-                                        <srcFile>${project.basedir}/src/main/resources/sql/oracle/create-schema-oracle.sql</srcFile>
+                                        <srcFile>${database.createSchema.file}</srcFile>
                                     </srcFiles>
                                 </configuration>
                             </execution>
@@ -185,7 +188,7 @@
                                 </goals>
                                 <configuration>
                                     <srcFiles>
-                                        <srcFile>${project.basedir}/src/main/resources/sql/oracle/populate-schema-oracle.sql</srcFile>
+                                        <srcFile>${database.populate.file}</srcFile>
                                     </srcFiles>
                                 </configuration>
                             </execution>
@@ -272,7 +275,7 @@
                                     <arguments>
                                         <argument>create-jdbc-connection-pool</argument>
                                         <argument>--datasourceclassname</argument>
-                                        <argument>oracle.jdbc.pool.OracleDataSource</argument>
+                                        <argument>${glassfish.datasource}</argument>
                                         <argument>--restype</argument>
                                         <argument>javax.sql.DataSource</argument>
                                         <argument>--validationmethod</argument>
