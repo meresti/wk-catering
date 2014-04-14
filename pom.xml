@@ -14,36 +14,6 @@
 		<endorsed.dir>${project.build.directory}/endorsed</endorsed.dir>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-		<database.groupId>com.oracle</database.groupId>
-		<database.artifactId>ojdbc6</database.artifactId>
-		<database.version>11.2.0.2.0</database.version>
-
-		<database.datasource.class>oracle.jdbc.pool.OracleDataSource</database.datasource.class>
-		<database.driver.class>oracle.jdbc.OracleDriver</database.driver.class>
-		<database.url>jdbc:oracle:thin:@//localhost:1521/ORACLE</database.url>
-		<database.admin.username>system</database.admin.username>
-		<database.admin.password>manager</database.admin.password>
-		<database.username>CATERING</database.username>
-		<database.password>catering</database.password>
-		<database.temptablespace>TEMP</database.temptablespace>
-		<database.usertablespace>USERS</database.usertablespace>
-
-		<database.delimiter>;</database.delimiter>
-		<database.sqlCreate>
-            <![CDATA[
-                create user ${database.username} identified by "${database.password}" default tablespace
-                "${database.usertablespace}" temporary tablespace "${database.temptablespace}" profile "DEFAULT";
-                grant connect to ${database.username};
-                grant resource to ${database.username};
-                grant create view to ${database.username};
-            ]]>
-		</database.sqlCreate>
-		<database.sqlDrop>
-            <![CDATA[
-                drop user ${database.username} cascade;
-            ]]>
-		</database.sqlDrop>
-
 		<eclipselink.version>2.5.1</eclipselink.version>
 		<eclipse.jpa.modelgen.version>2.5.1</eclipse.jpa.modelgen.version>
 		<javaee.api.version>7.0</javaee.api.version>
@@ -110,6 +80,43 @@
 		</profile>
 		<profile>
 			<id>db-setup</id>
+			<properties>
+				<database.groupId>com.oracle</database.groupId>
+				<database.artifactId>ojdbc6</database.artifactId>
+				<database.version>11.2.0.2.0</database.version>
+
+				<database.datasource.class>oracle.jdbc.pool.OracleDataSource</database.datasource.class>
+				<database.driver.class>oracle.jdbc.OracleDriver</database.driver.class>
+				<database.url>jdbc:oracle:thin:@//localhost:1521/ORACLE</database.url>
+				<database.admin.username>system</database.admin.username>
+				<database.admin.password>manager</database.admin.password>
+				<database.username>CATERING</database.username>
+				<database.password>catering</database.password>
+				<database.temptablespace>TEMP</database.temptablespace>
+				<database.usertablespace>USERS</database.usertablespace>
+
+				<database.delimiter>;</database.delimiter>
+				<database.sqlCreate>
+		            <![CDATA[
+		                create user ${database.username} identified by "${database.password}" default tablespace
+		                "${database.usertablespace}" temporary tablespace "${database.temptablespace}" profile "DEFAULT";
+		                grant connect to ${database.username};
+		                grant resource to ${database.username};
+		                grant create view to ${database.username};
+		            ]]>
+				</database.sqlCreate>
+				<database.sqlCreate.skip>false</database.sqlCreate.skip>
+				<database.sqlDrop>
+		            <![CDATA[
+		                drop user ${database.username} cascade;
+		            ]]>
+				</database.sqlDrop>
+				<database.sqlDrop.skip>false</database.sqlDrop.skip>
+				<database.createschema.file>${project.basedir}/src/main/resources/sql/oracle/create-schema-oracle.sql</database.createschema.file>
+				<database.createschema.skip>false</database.createschema.skip>
+				<database.loaddata.file>${project.basedir}/src/main/resources/sql/oracle/populate-schema-oracle.sql</database.loaddata.file>
+				<database.loaddata.skip>false</database.loaddata.skip>
+			</properties>
 			<build>
 				<plugins>
 					<plugin>
@@ -142,6 +149,7 @@
 									<goal>execute</goal>
 								</goals>
 								<configuration>
+									<skip>${database.sqlDrop.skip}</skip>
 									<username>${database.admin.username}</username>
 									<password>${database.admin.password}</password>
 									<sqlCommand>${database.sqlDrop}</sqlCommand>
@@ -155,6 +163,7 @@
 									<goal>execute</goal>
 								</goals>
 								<configuration>
+									<skip>${database.sqlCreate.skip}</skip>
 									<username>${database.admin.username}</username>
 									<password>${database.admin.password}</password>
 									<sqlCommand>${database.sqlCreate}</sqlCommand>
@@ -167,8 +176,9 @@
 									<goal>execute</goal>
 								</goals>
 								<configuration>
+									<skip>${database.createschema.skip}</skip>
 									<srcFiles>
-										<srcFile>${project.basedir}/src/main/resources/sql/oracle/create-schema-oracle.sql</srcFile>
+										<srcFile>${database.createschema.file}</srcFile>
 									</srcFiles>
 								</configuration>
 							</execution>
@@ -179,8 +189,9 @@
 									<goal>execute</goal>
 								</goals>
 								<configuration>
+									<skip>${database.loaddata.skip}</skip>
 									<srcFiles>
-										<srcFile>${project.basedir}/src/main/resources/sql/oracle/populate-schema-oracle.sql</srcFile>
+										<srcFile>${database.loaddata.file}</srcFile>
 									</srcFiles>
 								</configuration>
 							</execution>
@@ -197,6 +208,11 @@
 				<glassfish.connectionpool>cateringPool</glassfish.connectionpool>
 				<glassfish.jdbc.resource>jdbc/catering</glassfish.jdbc.resource>
 				<glassfish.realm>cateringRealm</glassfish.realm>
+
+				<glassfish.datasource.class>${database.datasource.class}</glassfish.datasource.class>
+				<glassfish.database.url>${database.url}</glassfish.database.url>
+				<glassfish.database.username>${database.username}</glassfish.database.username>
+				<glassfish.database.password>${database.password}</glassfish.database.password>
 			</properties>
 			<build>
 				<plugins>
@@ -274,7 +290,7 @@
 									<arguments>
 										<argument>create-jdbc-connection-pool</argument>
 										<argument>--datasourceclassname</argument>
-										<argument>${database.datasource.class}</argument>
+										<argument>${glassfish.datasource.class}</argument>
 										<argument>--restype</argument>
 										<argument>javax.sql.DataSource</argument>
 										<argument>--validationmethod</argument>
@@ -286,7 +302,7 @@
 										<argument>--validateatmostonceperiod</argument>
 										<argument>10</argument>
 										<argument>--property</argument>
-										<argument>user=${database.username}:password=${database.password}:url='${database.url}'</argument>
+										<argument>user=${glassfish.database.username}:password=${glassfish.database.password}:url='${glassfish.database.url}'</argument>
 										<argument>${glassfish.connectionpool}</argument>
 									</arguments>
 								</configuration>
