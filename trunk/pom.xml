@@ -79,11 +79,11 @@
 			</properties>
 		</profile>
 		<profile>
-			<id>db-setup</id>
+			<id>oracle</id>
 			<properties>
-				<database.groupId>com.oracle</database.groupId>
-				<database.artifactId>ojdbc6</database.artifactId>
-				<database.version>11.2.0.2.0</database.version>
+				<database.driver.groupId>com.oracle</database.driver.groupId>
+				<database.driver.artifactId>ojdbc6</database.driver.artifactId>
+				<database.driver.version>11.2.0.2.0</database.driver.version>
 
 				<database.datasource.class>oracle.jdbc.pool.OracleDataSource</database.datasource.class>
 				<database.driver.class>oracle.jdbc.OracleDriver</database.driver.class>
@@ -117,6 +117,9 @@
 				<database.loaddata.file>${project.basedir}/src/main/resources/sql/oracle/populate-schema-oracle.sql</database.loaddata.file>
 				<database.loaddata.skip>false</database.loaddata.skip>
 			</properties>
+		</profile>
+		<profile>
+			<id>db-setup</id>
 			<build>
 				<plugins>
 					<plugin>
@@ -126,9 +129,9 @@
 						<dependencies>
 							<dependency>
 								<!-- Adds the correct JDBC driver as a dependency of this plugin -->
-								<groupId>${database.groupId}</groupId>
-								<artifactId>${database.artifactId}</artifactId>
-								<version>${database.version}</version>
+								<groupId>${database.driver.groupId}</groupId>
+								<artifactId>${database.driver.artifactId}</artifactId>
+								<version>${database.driver.version}</version>
 							</dependency>
 						</dependencies>
 						<configuration>
