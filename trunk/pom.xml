@@ -118,6 +118,32 @@
 				<database.loaddata.skip>false</database.loaddata.skip>
 			</properties>
 		</profile>
+        <profile>
+            <id>derby</id>
+            <properties>
+                <database.driver.groupId>org.apache.derby</database.driver.groupId>
+                <database.driver.artifactId>derbyclient</database.driver.artifactId>
+                <database.driver.version>10.10.1.1</database.driver.version>
+
+                <database.datasource.class>org.apache.derby.jdbc.ClientDataSource</database.datasource.class>
+                <database.driver.class>org.apache.derby.jdbc.ClientDriver</database.driver.class>
+                <database.url>jdbc:derby://localhost:1527/${database.username};create=true</database.url>
+                <database.admin.username></database.admin.username>
+                <database.admin.password></database.admin.password>
+                <database.username>CATERING</database.username>
+                <database.password>catering</database.password>
+
+                <database.delimiter>;</database.delimiter>
+                <database.sqlCreate/>
+                <database.sqlCreate.skip>true</database.sqlCreate.skip>
+                <database.sqlDrop/>
+                <database.sqlDrop.skip>true</database.sqlDrop.skip>
+                <database.createschema.file>${project.basedir}/src/main/resources/sql/derby/create-schema-derby.sql</database.createschema.file>
+                <database.createschema.skip>false</database.createschema.skip>
+                <database.loaddata.file>${project.basedir}/src/main/resources/sql/derby/populate-schema-derby.sql</database.loaddata.file>
+                <database.loaddata.skip>false</database.loaddata.skip>
+            </properties>
+        </profile>
 		<profile>
 			<id>db-setup</id>
 			<build>
