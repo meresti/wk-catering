@@ -3,7 +3,8 @@ package org.catering.web.controller;
 import org.catering.ejb.FoodBean;
 import org.catering.model.Food;
 
-public class FoodLazyDataModel extends AbstractLazyDataModel<Food> {
+public class FoodLazyDataModel extends AbstractLazyDataModel<Food>
+{
 
     FoodLazyDataModel(FoodBean facade) {
         super(facade);
